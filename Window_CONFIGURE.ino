@@ -66,7 +66,7 @@ void loop()
   }
   else
   {
-  ESP.deepSleep(2000000000);
+  ESP.deepSleep(0);
   }
 }
 
