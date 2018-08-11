@@ -22,7 +22,8 @@ PubSubClient client(espClient);
 
 // Variables
 bool boot = true;
-char batteryVoltageMQTT[50];
+char openMessage[50];
+char closedMessage[50];
 
 //Functions
 
@@ -42,13 +43,15 @@ void reconnect()
   {
       int battery_Voltage = ESP.getVcc() + 600;
       String temp_str = String(battery_Voltage);
-      String mqttString = "{\"State\":\"open\", \"voltage\":\"" + temp_str + "\"}";
-      mqttString.toCharArray(batteryVoltageMQTT, mqttString.length() + 1);
-      if (client.connect(mqtt_client_name, mqtt_user, mqtt_pass, mqtt_topic, 0, 1, "Closed")) 
+      String mqttString1 = "{\"State\":\"closed\", \"voltage\":\"" + temp_str + "\"}";
+      mqttString1.toCharArray(closedMessage, mqttString1.length() + 1);
+      String mqttString2 = "{\"State\":\"open\", \"voltage\":\"" + temp_str + "\"}";
+      mqttString2.toCharArray(openMessage, mqttString2.length() + 1);
+      if (client.connect(mqtt_client_name, mqtt_user, mqtt_pass, mqtt_topic, 0, 1, closedMessage)) 
       {
         if(boot == true)
         {
-          client.publish(mqtt_topic, batteryVoltageMQTT);
+          client.publish(mqtt_topic, openMessage);
           boot = false;
         }
       } 
@@ -77,5 +80,4 @@ void loop()
   ESP.deepSleep(0);
   }
 }
-
 
